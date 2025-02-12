@@ -1,6 +1,10 @@
 #include <iostream>
 #include <vector>
+#include <random>    // random_device, mt19937, mersenne_engine
+#include <algorithm> // generate
+#include <chrono>    // Timing functions
 using namespace std;
+using namespace std::chrono;
 
 int find_maxDigits(vector<int> vec) {
     
@@ -79,14 +83,74 @@ vector<int> BucketSort(vector<int> oneD) {
     return oneD_return;
 }
 
+// int main() {
+
+//     vector<int> oneD(50);
+//     random_device rnd_device;
+//     mt19937 mersenne_engine {rnd_device()};
+//     uniform_int_distribution<int> dist {1, 100000};
+
+//     auto gen = [&dist, &mersenne_engine](){
+//         return dist(mersenne_engine);
+//     };
+
+//     generate(begin(oneD), end(oneD), gen);
+
+
+//     cout << "Voor BucketSort: " << endl;
+//     for (int num : oneD) {
+//         cout << num << " ";
+//     }
+//     cout << endl;
+//     cout << endl;
+
+//     oneD = BucketSort(oneD);
+
+//     cout << "Na BucketSort: " << endl;
+//     for (int num : oneD) {
+//         cout << num << " ";
+//     }
+
+//     return 0;
+// }
+
 int main() {
 
-    vector<int> oneD = {170, 45, 75, 90, 802, 24, 2, 66};
+    // Create a vector to store the generated numbers
+    std::vector<int> ns;
 
-    oneD = BucketSort(oneD);
+    // Use a for loop to generate the list
+    for (int i = 10; i <= 100; i += 1) {
+        ns.push_back(i);
+    }
 
-    for (int num : oneD) {
-        cout << num << " ";
+    for (int n : ns) {
+        // Generate a random vector to sort
+        random_device rnd_device;
+        mt19937 mersenne_engine {rnd_device()};
+        uniform_int_distribution<int> dist {1, 1000};
+
+        auto gen = [&dist, &mersenne_engine](){
+                       return dist(mersenne_engine);
+                   };
+
+        vector<int> vec(n);
+
+        generate(begin(vec), end(vec), gen);
+
+        // Start timing
+        steady_clock::time_point begin = steady_clock::now();
+
+        // Do the thing!
+        BucketSort(vec);
+
+        // Stop timing
+        steady_clock::time_point end = steady_clock::now();
+
+        // Calculate and print time
+        int time_ms = duration_cast<microseconds>(end - begin).count();
+
+        std::cout << n << ", " << time_ms << std::endl;
     }
 
     return 0;
