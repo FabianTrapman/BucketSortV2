@@ -83,6 +83,54 @@ vector<int> BucketSort(vector<int> oneD) {
     return oneD_return;
 }
 
+vector<vector<int>> timing_data(vector<int> ns, int runs) {
+
+    vector<vector<int>> times;
+
+    for (int n : ns) {
+
+        int total = 0;
+
+        for (int i = 0; i < runs; i++) {
+
+            // Generate a random vector to sort
+            random_device rnd_device;
+            mt19937 mersenne_engine {rnd_device()};
+            uniform_int_distribution<int> dist {1, 1000};
+
+            auto gen = [&dist, &mersenne_engine](){
+                        return dist(mersenne_engine);
+                    };
+
+            vector<int> vec(n);
+
+            generate(begin(vec), end(vec), gen);
+            
+
+            // Start timing
+            steady_clock::time_point begin = steady_clock::now();
+
+            // Do the thing!
+            BucketSort(vec);
+
+            // Stop timing
+            steady_clock::time_point end = steady_clock::now();
+
+            // Calculate and print time
+            int time_ms = duration_cast<microseconds>(end - begin).count();
+
+            total += time_ms;
+
+                }
+
+        times.push_back({n, total/runs});
+
+    }
+
+    return times;
+
+}
+
 // int main() {
 
 //     vector<int> oneD(50);
@@ -117,40 +165,23 @@ vector<int> BucketSort(vector<int> oneD) {
 int main() {
 
     // Create a vector to store the generated numbers
-    std::vector<int> ns;
+    // std::vector<int> ns;
 
-    // Use a for loop to generate the list
-    for (int i = 10; i <= 100; i += 1) {
-        ns.push_back(i);
-    }
+    // // Use a for loop to generate the list
+    // for (int i = 10; i <= 100; i += 1) {
+    //     ns.push_back(i);
+    // }
 
-    for (int n : ns) {
-        // Generate a random vector to sort
-        random_device rnd_device;
-        mt19937 mersenne_engine {rnd_device()};
-        uniform_int_distribution<int> dist {1, 1000};
+    vector<int> ns = {10, 100, 1000, 10000};
 
-        auto gen = [&dist, &mersenne_engine](){
-                       return dist(mersenne_engine);
-                   };
+    // Set the number of runs
+    int runs = 100;
 
-        vector<int> vec(n);
+    // Get the timing data
+    vector<vector<int>> times = timing_data(ns, runs);
 
-        generate(begin(vec), end(vec), gen);
-
-        // Start timing
-        steady_clock::time_point begin = steady_clock::now();
-
-        // Do the thing!
-        BucketSort(vec);
-
-        // Stop timing
-        steady_clock::time_point end = steady_clock::now();
-
-        // Calculate and print time
-        int time_ms = duration_cast<microseconds>(end - begin).count();
-
-        std::cout << n << ", " << time_ms << std::endl;
+    for (vector<int> time : times) {
+        cout << time[0] << ", " << time[1] << endl;
     }
 
     return 0;
