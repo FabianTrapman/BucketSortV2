@@ -1,0 +1,181 @@
+#include <iostream>
+#include <vector>
+#include <random>    // random_device, mt19937, mersenne_engine
+#include <algorithm> // generate
+#include <chrono>    // Timing functions
+using namespace std;
+using namespace std::chrono;
+
+int find_maxDigits(vector<int> vec) {                                       0(n)            2 * n
+    
+    int maxDigits = 0;                                                      
+    for (int num : vec) {                                                   for loop
+        int numDigits = std::to_string(num).length();                       write = 1 stap
+        maxDigits = std::max(maxDigits, numDigits);                         write = 1 stap
+    }
+
+    return maxDigits;
+}
+
+vector<string> pad_integers(vector<int> vec, int maxDigits) {               0(n)            3 * n
+    
+    vector<string> padded_vec;
+
+    // Pad each number with leading zeros
+    for (int num : vec) {                                                   for loop
+        std::string numStr = std::to_string(num);                           
+        int numDigits = numStr.length();                                    
+        int padding = maxDigits - numDigits;                                Decrement = 1 stap
+        
+        // Add leading zeros
+        numStr.insert(0, padding, '0');                                     Write = 1 stap
+        padded_vec.push_back(numStr);                                       Write = 1 stap
+    }
+
+    return padded_vec;
+}
+
+vector<vector<string>> distribution_pass(vector<string> oneD, int index) {  0(n)            1 + (n * 4)
+
+    vector<vector<string>> twoD(10);                                        Write = 1 stap
+
+    for (string oneD_value : oneD) {                                        for loop
+        int row = oneD_value[index] - '0';                                  Lookup, Decrement = 2 stap
+        twoD[row].push_back(oneD_value);                                    Lookup, Write = 2 stap
+    }
+
+    return twoD;
+}
+
+vector<string> gathering_pass(vector<vector<string>> twoD) {                0(n)            n * 1
+
+    vector<string> oneD;
+    
+    for (vector<string> row : twoD) {                                       for loop
+        for (string num : row) {                                            nested for loop
+            oneD.push_back(num);                                            Write = 1 stap
+        }
+    }
+
+    return oneD;
+}
+
+                                                                            Voor BucketSort hebben we niet alleen de aparte operations
+                                                                            Maar we maken ook gebruik van bovenstaande functies
+                                                                            Hierdoor checken we dus ook welke 0 notaties de gebruikte
+                                                                            functies hebben en nemen dat mee in de beredenering.
+
+vector<int> BucketSort(vector<int> oneD) {                                  0(d * n)
+    
+    int maxDigits = find_maxDigits(oneD);                                   0(n)        2 * n
+    int maxIndex = maxDigits - 1;                                           Decrement = 1 stap
+    vector<string> oneD_string = pad_integers(oneD, maxDigits);             0(n)        3 * n       
+
+    for (int i = 0; i < maxDigits; i++) {                                   for loop
+
+        vector<vector<string>> twoD = distribution_pass(oneD_string, maxIndex); 0(n)    1 + (n * 4)
+        oneD_string = gathering_pass(twoD);                                 0(n)
+        maxIndex--;                                                         decrement   1 * n
+
+    }
+
+    vector<int> oneD_return;
+
+    for (string num : oneD_string) {                                        for loop    1 * n
+        oneD_return.push_back(stoi(num));                                   Write = 1 stap
+    }
+    
+    return oneD_return;
+}
+
+                                                                            beredenering BucketSort tijdcomplexiteit:
+                                                O(d * (distribution_pass + gathering_pass)) = O(d * (n + n)) = O(d * n)
+                                                                            waarin
+                                                                            n = lijst lengte
+                                                                            d = maximale digit lengte van int in lijst
+
+                                                                            big 0:
+                                                                            O(d * n)
+
+
+                                                                            Wanneer we nog specifieker kijken en operation stappen
+                                                                            er bij betrekken komen we uit op het volgende: 
+                                                                            (2 * n) + 1 + (3 * n) + (d * (1 + (n * 4) + (1 * n)) + (1 * n))
+                                                                            (6 * n) + 1 + (d (1 + (n * 5)))
+
+                                                                            tijdcomplexiteit = (6 * n) + 1 + (d (1 + (n * 5)))
+
+
+
+vector<vector<int>> timing_data(vector<int> ns, int runs) {
+
+    vector<vector<int>> times;
+
+    for (int n : ns) {
+
+        int total = 0;
+
+        for (int i = 0; i < runs; i++) {
+
+            // Generate a random vector to sort
+            random_device rnd_device;
+            mt19937 mersenne_engine {rnd_device()};
+            uniform_int_distribution<int> dist {1, 1000};
+
+            auto gen = [&dist, &mersenne_engine](){
+                        return dist(mersenne_engine);
+                    };
+
+            vector<int> vec(n);
+
+            generate(begin(vec), end(vec), gen);
+            
+
+            // Start timing
+            steady_clock::time_point begin = steady_clock::now();
+
+            // Do the thing!
+            BucketSort(vec);
+
+            // Stop timing
+            steady_clock::time_point end = steady_clock::now();
+
+            // Calculate and print time
+            int time_ms = duration_cast<microseconds>(end - begin).count();
+
+            total += time_ms;
+
+                }
+
+        times.push_back({n, total/runs});
+
+    }
+
+    return times;
+
+}
+
+int main() {
+
+    // Create a vector to store the generated numbers
+    std::vector<int> ns;
+
+    // Use a for loop to generate the list
+    for (int i = 10; i <= 10000; i += 10) {
+        ns.push_back(i);
+    }
+
+    // vector<int> ns = {10, 100, 1000, 10000};
+
+    // Set the number of runs
+    int runs = 100;
+
+    // Get the timing data
+    vector<vector<int>> times = timing_data(ns, runs);
+
+    for (vector<int> time : times) {
+        cout << time[0] << ", " << time[1] << endl;
+    }
+
+    return 0;
+}

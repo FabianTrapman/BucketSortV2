@@ -165,14 +165,14 @@ vector<vector<int>> timing_data(vector<int> ns, int runs) {
 int main() {
 
     // Create a vector to store the generated numbers
-    // std::vector<int> ns;
+    std::vector<int> ns;
 
-    // // Use a for loop to generate the list
-    // for (int i = 10; i <= 100; i += 1) {
-    //     ns.push_back(i);
-    // }
+    // Use a for loop to generate the list
+    for (int i = 10; i <= 10000; i += 10) {
+        ns.push_back(i);
+    }
 
-    vector<int> ns = {10, 100, 1000, 10000};
+    // vector<int> ns = {10, 100, 1000, 10000};
 
     // Set the number of runs
     int runs = 100;
