@@ -165,58 +165,58 @@ vector<vector<int>> timing_data(vector<int> ns, int runs) {
 
 }
 
-int main() {
-
-    vector<int> oneD(50);
-    random_device rnd_device;
-    mt19937 mersenne_engine {rnd_device()};
-    uniform_int_distribution<int> dist {-100000, 100000};
-
-    auto gen = [&dist, &mersenne_engine](){
-        return dist(mersenne_engine);
-    };
-
-    generate(begin(oneD), end(oneD), gen);
-
-
-    cout << "Voor BucketSort: " << endl;
-    for (int num : oneD) {
-        cout << num << " ";
-    }
-    cout << endl;
-    cout << endl;
-
-    oneD = BucketSort_negative(oneD);
-
-    cout << "Na BucketSort: " << endl;
-    for (int num : oneD) {
-        cout << num << " ";
-    }
-
-    return 0;
-}
-
 // int main() {
 
-//     // Create a vector to store the generated numbers
-//     std::vector<int> ns;
+//     vector<int> oneD(50);
+//     random_device rnd_device;
+//     mt19937 mersenne_engine {rnd_device()};
+//     uniform_int_distribution<int> dist {-100000, 100000};
 
-//     // Use a for loop to generate the list
-//     for (int i = 10; i <= 10000; i += 10) {
-//         ns.push_back(i);
+//     auto gen = [&dist, &mersenne_engine](){
+//         return dist(mersenne_engine);
+//     };
+
+//     generate(begin(oneD), end(oneD), gen);
+
+
+//     cout << "Voor BucketSort: " << endl;
+//     for (int num : oneD) {
+//         cout << num << " ";
 //     }
+//     cout << endl;
+//     cout << endl;
 
-//     // vector<int> ns = {10, 100, 1000, 10000};
+//     oneD = BucketSort_negative(oneD);
 
-//     // Set the number of runs
-//     int runs = 100;
-
-//     // Get the timing data
-//     vector<vector<int>> times = timing_data(ns, runs);
-
-//     for (vector<int> time : times) {
-//         cout << time[0] << ", " << time[1] << endl;
+//     cout << "Na BucketSort: " << endl;
+//     for (int num : oneD) {
+//         cout << num << " ";
 //     }
 
 //     return 0;
 // }
+
+int main() {
+
+    // Create a vector to store the generated numbers
+    std::vector<int> ns;
+
+    // Use a for loop to generate the list
+    for (int i = 10; i <= 10000; i += 10) {
+        ns.push_back(i);
+    }
+
+    // vector<int> ns = {10, 100, 1000, 10000};
+
+    // Set the number of runs
+    int runs = 100;
+
+    // Get the timing data
+    vector<vector<int>> times = timing_data(ns, runs);
+
+    for (vector<int> time : times) {
+        cout << time[0] << ", " << time[1] << endl;
+    }
+
+    return 0;
+}
