@@ -83,6 +83,40 @@ vector<int> BucketSort(vector<int> oneD) {
     return oneD_return;
 }
 
+vector<int> BucketSort_negative(vector<int> oneD) {
+    
+    vector<int> positive;
+    vector<int> negative;
+
+    for (int num : oneD) {
+        if (num < 0) {
+            negative.push_back(num * -1);
+        } else {
+            positive.push_back(num);
+        }
+    }
+
+    positive = BucketSort(positive);
+    negative = BucketSort(negative);
+
+    reverse(negative.begin(), negative.end());
+
+    for (int i = 0; i < negative.size(); i++) {
+        negative[i] *= -1;
+    }
+
+    vector<int> sorted_list;
+
+    for (int num : negative) {
+        sorted_list.push_back(num);
+    }
+    for (int num : positive) {
+        sorted_list.push_back(num);
+    }
+
+    return sorted_list;
+}
+
 vector<vector<int>> timing_data(vector<int> ns, int runs) {
 
     vector<vector<int>> times;
@@ -131,58 +165,58 @@ vector<vector<int>> timing_data(vector<int> ns, int runs) {
 
 }
 
-// int main() {
-
-//     vector<int> oneD(50);
-//     random_device rnd_device;
-//     mt19937 mersenne_engine {rnd_device()};
-//     uniform_int_distribution<int> dist {1, 100000};
-
-//     auto gen = [&dist, &mersenne_engine](){
-//         return dist(mersenne_engine);
-//     };
-
-//     generate(begin(oneD), end(oneD), gen);
-
-
-//     cout << "Voor BucketSort: " << endl;
-//     for (int num : oneD) {
-//         cout << num << " ";
-//     }
-//     cout << endl;
-//     cout << endl;
-
-//     oneD = BucketSort(oneD);
-
-//     cout << "Na BucketSort: " << endl;
-//     for (int num : oneD) {
-//         cout << num << " ";
-//     }
-
-//     return 0;
-// }
-
 int main() {
 
-    // Create a vector to store the generated numbers
-    std::vector<int> ns;
+    vector<int> oneD(50);
+    random_device rnd_device;
+    mt19937 mersenne_engine {rnd_device()};
+    uniform_int_distribution<int> dist {-100000, 100000};
 
-    // Use a for loop to generate the list
-    for (int i = 10; i <= 10000; i += 10) {
-        ns.push_back(i);
+    auto gen = [&dist, &mersenne_engine](){
+        return dist(mersenne_engine);
+    };
+
+    generate(begin(oneD), end(oneD), gen);
+
+
+    cout << "Voor BucketSort: " << endl;
+    for (int num : oneD) {
+        cout << num << " ";
     }
+    cout << endl;
+    cout << endl;
 
-    // vector<int> ns = {10, 100, 1000, 10000};
+    oneD = BucketSort_negative(oneD);
 
-    // Set the number of runs
-    int runs = 100;
-
-    // Get the timing data
-    vector<vector<int>> times = timing_data(ns, runs);
-
-    for (vector<int> time : times) {
-        cout << time[0] << ", " << time[1] << endl;
+    cout << "Na BucketSort: " << endl;
+    for (int num : oneD) {
+        cout << num << " ";
     }
 
     return 0;
 }
+
+// int main() {
+
+//     // Create a vector to store the generated numbers
+//     std::vector<int> ns;
+
+//     // Use a for loop to generate the list
+//     for (int i = 10; i <= 10000; i += 10) {
+//         ns.push_back(i);
+//     }
+
+//     // vector<int> ns = {10, 100, 1000, 10000};
+
+//     // Set the number of runs
+//     int runs = 100;
+
+//     // Get the timing data
+//     vector<vector<int>> times = timing_data(ns, runs);
+
+//     for (vector<int> time : times) {
+//         cout << time[0] << ", " << time[1] << endl;
+//     }
+
+//     return 0;
+// }
